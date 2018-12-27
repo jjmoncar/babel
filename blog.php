@@ -25,6 +25,8 @@
 		<!-- script para detecter automaticamente pais -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
+		<!-- Para la validacion del formulario -->
+		<script language="javascript" type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -35,6 +37,54 @@
 		<script>
 			$.getJSON('http://api.wipmania.com/jsonp?callback=?', function (data) {
 		    document.getElementById("pais").value = data.address.country;
+			});
+		</script>
+
+		<script type="text/javascript">
+			$('document').ready(function(){
+				$('#boton').click(function(){
+					
+					var nombre = $('#nombre').val();
+					var email = $('#correo').val();
+					var apellido = $('#apellido').val();
+					var telefono = $('#telefono').val();
+					var pais = $('#pais').val();
+					var estatus = $('#estatus').val();
+
+
+					jQuery.post("procesar.php", {
+						name:nombre,
+						apellido:apellido,
+						pwd:email,
+						telefono:telefono,
+						pais:pais,
+						estatus:estatus
+					}, function(data, textStatus){
+						if(data == 1){
+							$('#res').html("Datos Agregados Satisfactoriamente!");
+							$('#res').css('color','green');
+							//$("#frmDatos")[0].reset();
+							$('#nombre').val("");
+							$('#correo').val("");
+							$('#apellido').val("");
+							$('#telefono').val("");
+							$("#nombre").focus();
+							setTimeout(function() {$("#res").fadeOut(1500); },3000);
+
+						}
+						else{
+							$('#res').html("Ha ocurrido un error.");
+							$('#res').css('color','red');
+							$('#nombre').val("");
+							$('#correo').val("");
+							$('#apellido').val("");
+							$('#telefono').val("");
+							//$("#frmDatos")[0].reset();
+							$("#nombre").focus();
+							setTimeout(function() {$("#res").fadeOut(1500); },3000);
+						}
+					});
+				});
 			});
 		</script>
 
@@ -68,7 +118,7 @@
 						<li><a href="#">Nosotros</a></li>
 						<li><a href="#">Funciones</a></li>
 						<li><a href="#" onclick="alert('En construcción!');">Descargas</a></li>
-						<li><a href="#">Suscribete</a></li>
+						<li><a href="blog.php">Suscribete</a></li>
 						<li><a href="contact.html">Contactenos</a></li>
 					</ul>
 				</nav>
@@ -116,56 +166,25 @@
 						<!-- row -->
 						<div class="row">
 
-							<form id="frmDatos" name="frmDatos" method="POST" action="procesar.php">
-
-								<!-- Text input-->
-								<div class="form-group">
-								  <div class="col-md-4">
-								  	<input id="nombre" name="nombre" placeholder="Nombre" class="form-control input-md" type="text" required=""><br>
-								  </div>
-								</div>
-
-								<!-- Text input-->
-								<div class="form-group">  
-								  <div class="col-md-4">
-								  <input id="apellido" name="apellido" placeholder="Apellido" class="form-control input-md" type="text" required=""><br>
-								  </div>
-								</div>
-
-								<!-- Text input-->
-								<div class="form-group">
-								  <div class="col-md-4">
-								  <input id="correo" name="correo" placeholder="Correo" class="form-control input-md" type="email" required=""><br> 
-								  </div>
-								</div>
-
-								<!-- Text input-->
-								<div class="form-group">  
-								  <div class="col-md-4">
-								  <input id="telefono" name="telefono" placeholder="Telefono" class="form-control input-md" type="text" required=""><br>
-								  </div>
-								</div>
-
-								<!-- Text input-->
-								<div class="form-group">
-								  <div class="col-md-4">
-								  <input id="pais" name="pais" placeholder="Pais" class="form-control input-md" readonly="" type="text">
-								  </div><br>
-								</div>
-
-								<!-- Select Basic -->
-								<div class="form-group">
-								  <div class="col-md-4">
-								  <input id="estatus" name="estatus" placeholder="Estatus" readonly="true" value="f" class="form-control input-md" type="hidden">
-								  </div>
-								</div>
-
-								<div class="form-group">
-									<div class="col-md-4">
-										<a name="enviar" id="enviar" value="Enviar" class="btn btn-primary btn-lg"><i class="fa fa-twitter"></i> Enviar</a>
-									</div>
-								</div>
+							<div class="col-md-6">
+						<div class="contact-form">
+							<h4>Registro</h4>
+							<!-- <form id="frmDatos" name="frmDatos" method="POST" action="procesar.php"> -->
+							<form id="frmDatos" name="frmDatos">
+								<input id="nombre" name="nombre" placeholder="Nombre" class="form-control input-md input" type="text" required="">
+								<input id="apellido" name="apellido" placeholder="Apellido" class="form-control input-md input" type="text" required="">
+								<input id="correo" name="correo" placeholder="Correo" class="form-control input-md input" type="email" required="">
+								<input id="telefono" name="telefono" placeholder="Telefono" class="form-control input-md input" type="text" required="">
+								<input id="pais" name="pais" placeholder="Pais" class="form-control input-md input" readonly="" type="text">
+								<input id="estatus" name="estatus" placeholder="Estatus" readonly="true" value="f" class="form-control input-md" type="hidden">
+								
+								<input type="button" class="main-button icon-button pull-right" id="boton" value="Registrase"/>
+								<!-- <input type="submit" class="main-button icon-button pull-right" value="Registrase"> -->
 							</form>
+							<span id="res"></span>
+						</div>
+					</div>
+
 						</div>
 						<!-- /row -->
 
@@ -182,7 +201,8 @@
 
 						<!-- category widget -->
 						<div class="widget category-widget">
-							<!-- <h3>Categories</h3> -->
+							<h3>Se Parte de Nosotros</h3> 
+							<p>Forma parte de la comunidad global</p>
 
 						</div>
 						<!-- /category widget -->
@@ -290,5 +310,10 @@
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 
+		<script>
+			jQuery(function() {
+			   jQuery( "#frmDatos" ).validate();
+			});
+		</script>
 	</body>
 </html>
